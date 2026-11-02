@@ -106,12 +106,53 @@ footer{margin-top:3.5rem;padding:1.5rem 0 2.5rem;border-top:1px solid var(--line
   @keyframes emerge{to{opacity:1;filter:blur(0);transform:none}}
 }
 @media (prefers-reduced-motion:reduce){.smoke i,.flame{animation:none}#trail,#cur{display:none}}
+
+
+/* Visible decorative planets */
+.planet-field{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
+.planet{position:absolute;border-radius:50%;opacity:.72;filter:saturate(.85);box-shadow:inset -18px -12px 24px rgba(0,0,0,.48),inset 7px 5px 14px rgba(255,255,255,.16),0 0 28px rgba(180,170,210,.10);animation:planet-drift 18s ease-in-out infinite alternate}
+.planet::after{content:"";position:absolute;inset:12%;border-radius:50%;background:radial-gradient(circle at 30% 28%,rgba(255,255,255,.22),transparent 48%)}
+.planet-one{width:clamp(62px,8vw,112px);height:clamp(62px,8vw,112px);left:4%;top:24%;background:radial-gradient(circle at 32% 28%,#d7b89b,#8b6470 48%,#342b45 78%)}
+.planet-two{width:clamp(42px,5vw,72px);height:clamp(42px,5vw,72px);right:7%;top:18%;background:radial-gradient(circle at 32% 28%,#d7c9a0,#9a8054 52%,#403348 82%);animation-delay:-6s}
+.planet-three{width:clamp(76px,10vw,138px);height:clamp(76px,10vw,138px);right:3%;bottom:13%;background:radial-gradient(circle at 32% 28%,#a9c8c5,#527d83 50%,#263342 82%);animation-delay:-11s}
+.planet-ring{position:absolute;width:155%;height:38%;left:-27%;top:31%;border:5px solid rgba(220,190,151,.58);border-left-color:rgba(220,190,151,.2);border-right-color:rgba(220,190,151,.2);border-radius:50%;transform:rotate(-22deg);box-shadow:0 0 8px rgba(227,188,130,.18)}
+.planet-four{width:clamp(30px,3.5vw,48px);height:clamp(30px,3.5vw,48px);left:18%;bottom:12%;background:radial-gradient(circle at 32% 28%,#c9b5db,#796b9b 55%,#302b43 85%);animation-delay:-3s}
+@keyframes planet-drift{from{transform:translate3d(0,-8px,0) rotate(-5deg)}to{transform:translate3d(0,12px,0) rotate(6deg)}}
+@media(max-width:620px){.planet-one{left:-22px;top:22%}.planet-two{right:-12px;top:14%}.planet-three{right:-35px;bottom:12%}.planet-four{left:5%;bottom:7%}}
+@media(prefers-reduced-motion:reduce){.planet{animation:none}}
+
+/* Mission-control additions */
+#mission-progress{position:fixed;top:0;left:0;width:100%;height:4px;z-index:30;background:rgba(255,255,255,.08)}
+#mission-fill{height:100%;width:0;background:linear-gradient(90deg,#8f9fc5,var(--accent));transition:width .12s linear}
+#mission-rocket{position:fixed;top:9px;left:0;z-index:29;font-size:18px;transform:translateX(-50%);pointer-events:none;filter:drop-shadow(0 0 7px rgba(227,188,130,.55))}
+.interactive-panel{margin:1.5rem 0 0;padding:1.2rem;border:1px solid var(--line);border-radius:1rem;background:rgba(28,28,36,.68);backdrop-filter:blur(14px)}
+.panel-kicker{font-size:.78rem;letter-spacing:.16em;text-transform:uppercase;color:var(--accent);margin:0 0 .4rem}
+.terminal{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:1rem;align-items:center}
+.terminal h2{font-size:1.8rem;margin-bottom:.4rem}
+.terminal-output{min-height:3.2rem;color:var(--muted);margin:.3rem 0 0;font-size:.95rem}
+.terminal-actions{display:flex;flex-wrap:wrap;gap:.5rem}
+.terminal-actions button,.skill-node{font:inherit;color:var(--ink);background:rgba(255,255,255,.035);border:1px solid var(--line);border-radius:999px;padding:.48rem .85rem;cursor:pointer}
+.terminal-actions button:hover,.terminal-actions button:focus-visible,.skill-node[aria-pressed=true]{border-color:var(--accent);color:var(--accent)}
+.constellation{margin-top:1rem;display:grid;grid-template-columns:repeat(auto-fit,minmax(115px,1fr));gap:.7rem}
+.skill-node{border-radius:.8rem;text-align:left;min-height:58px;position:relative;padding:.65rem .8rem}
+.skill-node::before{content:'✦';color:var(--accent);margin-right:.45rem}
+.skill-detail{margin:.9rem 0 0;padding:.8rem 1rem;border-left:2px solid var(--accent);background:rgba(227,188,130,.06);color:var(--muted);min-height:3rem}
+@media(max-width:620px){.terminal{grid-template-columns:1fr}.terminal-actions button{flex:1 1 auto}.interactive-panel{padding:1rem}}
+@media(prefers-reduced-motion:reduce){#mission-fill{transition:none}}
+
 </style>
 </head>
 <body>
+<div id="mission-progress" aria-hidden="true"><div id="mission-fill"></div></div><div id="mission-rocket" aria-hidden="true">🚀</div>
 <svg width="0" height="0" style="position:absolute" aria-hidden="true"><symbol id="rk" viewBox="0 0 24 44"><path d="M12 1C16.5 7 17.5 15 16 26H8C6.5 15 7.5 7 12 1Z" fill="#E9E4EC"/><circle cx="12" cy="13" r="2.8" fill="#3B3447" stroke="#E3BC82" stroke-width="1"/><path d="M8 17L3 28L8 26ZM16 17L21 28L16 26Z" fill="#E3BC82"/></symbol></svg>
 
 <div class="smoke" aria-hidden="true"><i></i><i></i><i></i></div>
+<div class="planet-field" aria-hidden="true">
+  <span class="planet planet-one"></span>
+  <span class="planet planet-two"><span class="planet-ring"></span></span>
+  <span class="planet planet-three"></span>
+  <span class="planet planet-four"></span>
+</div>
 <canvas id="trail" aria-hidden="true"></canvas>
 <svg id="cur" viewBox="0 0 24 44" aria-hidden="true"><use href="#rk"/><path class="flame" d="M9.5 26C10 34 11 40 12 43C13 40 14 34 14.5 26Z"/></svg>
 
@@ -135,7 +176,7 @@ footer{margin-top:3.5rem;padding:1.5rem 0 2.5rem;border-top:1px solid var(--line
   <main>
     <div class="hero">
       <h1 id="name" tabindex="-1" aria-label="Jyothsna Vanapalli">Jyothsna Vanapalli</h1>
-      <p class="lede">Electronics and Communication Engineering student with an ISRO internship, turning raw sensor data and hardware into tools people can use.</p>
+      <p class="lede">I'm Jyothsna, an Electronics and Communication Engineering graduate with a strong interest in computer networking and communication technologies. With hands-on experience at ISRO and a passion for learning, I enjoy exploring new technologies, solving problems and turning ideas into reality. Always curious, always growing, and excited for what's next!</p>
       <p class="tip">Drag your mouse or finger across the page and see what trails behind. Then open the stages below.</p>
       <dl class="glance">
         <div><dt>Studying</dt><dd>B.Tech, Electronics and Communication</dd></div>
@@ -145,11 +186,26 @@ footer{margin-top:3.5rem;padding:1.5rem 0 2.5rem;border-top:1px solid var(--line
       </dl>
     </div>
 
+
+    <section class="interactive-panel terminal" aria-label="Quick portfolio terminal">
+      <div>
+        <p class="panel-kicker">Quick navigation · system online</p>
+        <h2>Explore my mission file</h2>
+        <p class="terminal-output" id="terminal-output" aria-live="polite">Choose a command to get a quick snapshot of my journey.</p>
+      </div>
+      <div class="terminal-actions">
+        <button type="button" data-command="about">about</button>
+        <button type="button" data-command="skills">skills</button>
+        <button type="button" data-command="projects">projects</button>
+        <button type="button" data-command="contact">contact</button>
+      </div>
+    </section>
+
     <div class="stages">
       <details class="stage" open>
         <summary><span class="n">Stage 1</span><span class="q">Who is she?<small>The two-minute version</small></span></summary>
         <div class="sb"><div class="read">
-          <div><h3>What I study</h3><p>Core Electronics and Communication subjects, from digital design in Verilog and SystemVerilog to 8086 assembly, with a 9.3 CGPA through the degree so far.</p></div>
+          <div><h3>What I study</h3><p>Core Electronics and Communication subjects, from digital design in Verilog and SystemVerilog to 8086 assembly, with a 9.39 CGPA through the degree so far.</p></div>
           <div><h3>What I’m good at</h3><p>Analytical, step-by-step problem solving. At ISRO I built a Python tool that calibrates and filters sensor data, and I’ve built an IoT pet feeder on Arduino and ESP32-CAM.</p></div>
           <div><h3>What I’m looking for</h3><p>An entry-level role where I can apply technical fundamentals and grow into a data-driven professional.</p></div>
         </div></div>
@@ -166,7 +222,20 @@ footer{margin-top:3.5rem;padding:1.5rem 0 2.5rem;border-top:1px solid var(--line
 
       <details class="stage">
         <summary><span class="n">Stage 3</span><span class="q">What can she actually do?<small>From Verilog to Canva</small></span></summary>
-        <div class="sb"><div class="skills">
+        <div class="sb">
+        <div class="interactive-panel">
+          <p class="panel-kicker">Skill constellation · select a star</p>
+          <div class="constellation" role="group" aria-label="Interactive skills">
+            <button class="skill-node" type="button" data-skill="Python · scripting, data processing and automation." aria-pressed="true">Python</button>
+            <button class="skill-node" type="button" data-skill="C · programming fundamentals and problem solving.">C programming</button>
+            <button class="skill-node" type="button" data-skill="Java · object-oriented programming fundamentals.">Java</button>
+            <button class="skill-node" type="button" data-skill="Verilog and SystemVerilog · digital design and verification concepts.">Verilog / SV</button>
+            <button class="skill-node" type="button" data-skill="Networking · routing, switching, TCP/IP and Cisco Packet Tracer.">Networking</button>
+            <button class="skill-node" type="button" data-skill="IoT and edge computing · sensor integration, gateways and NetSim.">IoT / Edge</button>
+          </div>
+          <p class="skill-detail" id="skill-detail" aria-live="polite">Python · scripting, data processing and automation.</p>
+        </div>
+<div class="skills">
           <div><h3>Programming</h3><ul><li>C</li><li>Python</li><li>Java</li></ul></div>
           <div><h3>Hardware design languages</h3><ul><li>Verilog</li><li>SystemVerilog</li><li>8086 Assembly</li></ul></div>
           <div><h3>Engineering tools</h3><ul><li>Cadence</li><li>Xilinx ISE</li><li>MATLAB</li><li>Ansys</li><li>Cisco Packet Tracer</li><li>e-Sim</li></ul></div>
@@ -189,6 +258,7 @@ footer{margin-top:3.5rem;padding:1.5rem 0 2.5rem;border-top:1px solid var(--line
             <li>Designed the web interface in HTML and CSS and built a Flask backend for file handling and workflows.</li>
             <li>Made the whole process automated from a single interface, so it’s easier to use.</li>
           </ul>
+          
         </li></ol></div>
       </details>
 
@@ -203,11 +273,45 @@ footer{margin-top:3.5rem;padding:1.5rem 0 2.5rem;border-top:1px solid var(--line
             <li>Uses RTC-based timing, a keypad matrix and an LCD so feeding times can be set by the user.</li>
             <li>Streams real-time video of the pet with an ESP32-CAM module.</li>
           </ul>
+          
         </li></ol></div>
       </details>
 
       <details class="stage">
-        <summary><span class="n">Stage 6</span><span class="q">What else is she up to?<small>Essays, clubs and social media</small></span></summary>
+  <summary>
+    <span class="n">Stage 6</span>
+    <span class="q">Gateway Design through Edge Computing
+      <small>Final Year Project · TRAPS</small>
+    </span>
+  </summary>
+
+  <div class="sb">
+    <ol class="tl">
+      <li>
+        <h3>Gateway Design through Edge Computing using TRAPS</h3>
+
+        <p class="meta">Final Year B.Tech Project · Team Lead</p>
+
+        <p>
+          Modified gateway behaviour to improve network traffic
+          management and reduce congestion in an IoT-based Wireless
+          Sensor Network. Explored routing protocols and priority-based
+          task scheduling to ensure that emergency sensor data reaches
+          the cloud before non-critical data.
+        </p>
+
+        <p>
+          <strong>Technologies:</strong>
+          NetSim, IoT, WSN, Edge Computing, AODV, RPL.
+        </p>
+
+        
+      </li>
+    </ol>
+  </div>
+</details>
+      <details class="stage">
+        <summary><span class="n">Stage 7</span><span class="q">What else is she up to?<small>Essays, clubs and social media</small></span></summary>
         <div class="sb"><ul class="plain">
           <li>Winner, creative and essay writing, Literary Day at GVPCE</li>
           <li>Social media handler, Hearts of Humanity Club</li>
@@ -222,6 +326,7 @@ footer{margin-top:3.5rem;padding:1.5rem 0 2.5rem;border-top:1px solid var(--line
       <p><a href="mailto:vjyothsna2312@gmail.com">vjyothsna2312@gmail.com</a></p>
     </section>
   </main>
+
 
   <footer>Last updated October 2026</footer>
 </div>
@@ -311,6 +416,38 @@ footer{margin-top:3.5rem;padding:1.5rem 0 2.5rem;border-top:1px solid var(--line
     });
     root.addEventListener('mouseleave',function(){if(rk)rk.style.opacity=0;last=null});
   }else if(rk){rk.remove();rk=null}
+
+
+  /* Scroll mission progress */
+  var fill=document.getElementById('mission-fill'),rocket=document.getElementById('mission-rocket');
+  function updateMission(){
+    var max=document.documentElement.scrollHeight-innerHeight;
+    var pct=max>0?Math.max(0,Math.min(100,(scrollY/max)*100)):0;
+    fill.style.width=pct+'%';
+    rocket.style.left=pct+'%';
+  }
+  addEventListener('scroll',updateMission,{passive:true});
+  addEventListener('resize',updateMission);updateMission();
+
+  /* Clickable skill constellation */
+  var skillButtons=[].slice.call(document.querySelectorAll('.skill-node'));
+  var skillDetail=document.getElementById('skill-detail');
+  skillButtons.forEach(function(btn){btn.addEventListener('click',function(){
+    skillButtons.forEach(function(other){other.setAttribute('aria-pressed','false')});
+    btn.setAttribute('aria-pressed','true');skillDetail.textContent=btn.getAttribute('data-skill');
+  })});
+
+  /* Quick command terminal */
+  var commandText={
+    about:'Electronics and Communication Engineering graduate interested in networking, communication technologies and practical problem solving.',
+    skills:'Core areas: Python, C, Java, networking, Verilog/SystemVerilog, IoT and engineering tools.',
+    projects:'Explore the ISRO internship, Smart Pet Feeding system and TRAPS-based edge gateway project in the mission stages below.',
+    contact:'Ready to connect? Use the email link in the Mission complete section at the bottom of this page.'
+  };
+  document.querySelectorAll('[data-command]').forEach(function(btn){btn.addEventListener('click',function(){
+    document.getElementById('terminal-output').textContent='> '+btn.dataset.command+'  —  '+commandText[btn.dataset.command];
+    if(btn.dataset.command==='contact')document.getElementById('contact').scrollIntoView({behavior:reduce?'auto':'smooth'});
+  })});
 
   /* launch */
   var L=document.getElementById('launch'),ign=document.getElementById('ign'),big=document.getElementById('big');
